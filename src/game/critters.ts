@@ -1910,3 +1910,22 @@ export function critterSrc(d: CritterDesign): [string, string, string] {
 export const CRITTER_MAP: Record<string, CritterDesign> = Object.fromEntries(
   [...CRITTER_ENEMIES, ...CRITTER_HEROES].map((d) => [d.key, d]),
 );
+
+const portraitCache = new Map<string, string>();
+
+/** Single idle frame of a design — cheap art for menu tiles. */
+export function critterPortrait(d: CritterDesign): string {
+  const hit = portraitCache.get(d.key);
+  if (hit) return hit;
+  if (typeof document === "undefined") return "";
+  const c = document.createElement("canvas");
+  c.width = FRAME;
+  c.height = FRAME;
+  const g = c.getContext("2d")!;
+  g.lineJoin = "round";
+  g.translate(FRAME / 2, FRAME - 12);
+  drawCritter(g, d, { squash: 1, step: 0, lift: 0, lean: 0, blink: 0 });
+  const url = c.toDataURL();
+  portraitCache.set(d.key, url);
+  return url;
+}
