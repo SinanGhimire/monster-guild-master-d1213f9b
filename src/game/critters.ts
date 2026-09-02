@@ -41,8 +41,39 @@ export type CritterEnemyKey =
 
 export type CritterHeroKey = "templar" | "reaper" | "oracle" | "seraph" | "warchief" | "sprout";
 
+/** Class headgear drawn on top of the base chibi body (see class-critters.ts). */
+export type CritterHat =
+  | "none"
+  | "bandana"
+  | "boomerang"
+  | "armyhelm"
+  | "ninjamask"
+  | "hood"
+  | "piratehat"
+  | "vikinghelm"
+  | "knighthelm"
+  | "gladiatorhelm"
+  | "feathercap"
+  | "greenhood"
+  | "wizardhat"
+  | "witchhat"
+  | "antlers"
+  | "featherband"
+  | "headband"
+  | "mitre"
+  | "goggles"
+  | "gasmask"
+  | "headmirror"
+  | "mohawk"
+  | "jesterhat"
+  | "afro"
+  | "sheet"
+  | "cultisthood"
+  | "demonhorns"
+  | "reaperhood";
+
 export interface CritterDesign {
-  key: CritterEnemyKey | CritterHeroKey;
+  key: CritterEnemyKey | CritterHeroKey | (string & {});
   name: string;
   /** main body colour */
   body: string;
