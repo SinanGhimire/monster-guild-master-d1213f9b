@@ -101,6 +101,10 @@ export interface CritterDesign {
   claws?: boolean;
   /** optional emissive halo behind the creature (bosses / elites) */
   glow?: string;
+  /** class headgear layered over the head (drawn last, above the face) */
+  hat?: CritterHat;
+  /** accent colour used by some hats (plumes, cloth, gems) */
+  accent?: string;
 }
 
 const OUTLINE = "#140f1a";
