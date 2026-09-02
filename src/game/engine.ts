@@ -1265,7 +1265,7 @@ export function createState(
   const def = CLASSES[cls] ?? CLASSES.soldier;
   const artKey = classArtKey(cls);
   const skin = (CLASS_DESIGNS[artKey] ? artKey : (def.skin ?? character)) as CharacterKey;
-  const c = CHARACTERS[skin];
+  
   const decor: Decor[] = [];
 
   const maxHp = Math.round(def.hp * def.hpMult);
