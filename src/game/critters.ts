@@ -1834,6 +1834,7 @@ function drawCritter(
   drawCrown(g, d, w, h);
   drawArms(g, d, w, h, opts.step);
   drawFace(g, d, w, h, opts.blink);
+  drawHat(g, d, w, h);
   g.restore();
 }
 
