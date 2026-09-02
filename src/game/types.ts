@@ -63,9 +63,7 @@ export type CharacterKey =
   | "oracle"
   | "seraph"
   | "warchief"
-  | "sprout"
-  // class art keys (c_<class>), generated procedurally per class
-  | (string & {});
+  | "sprout";
 
 export type WeaponRarity = "common" | "uncommon" | "rare" | "epic" | "legendary";
 export type BulletVisual = "tracer" | "bolt" | "orb" | "beam" | "arrow" | "ring";
@@ -141,7 +139,8 @@ export interface Player extends Vec {
   shield: number;
   damageMult: number;
   rateMult: number;
-  character: CharacterKey;
+  /** sprite key: a hero CharacterKey or a class art key (c_<class>) */
+  character: string;
   /** selected Brotato-style class */
   class: ClassKey;
   mods: Mods;
@@ -346,7 +345,8 @@ export interface Echo {
   rateMult: number;
   cooldown: number;
   muzzle: number;
-  character: CharacterKey;
+  /** sprite key: a hero CharacterKey or a class art key (c_<class>) */
+  character: string;
   mods: Mods;
   fading: number;
   dead: boolean;

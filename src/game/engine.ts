@@ -1264,7 +1264,7 @@ export function createState(
 ): GameState {
   const def = CLASSES[cls] ?? CLASSES.soldier;
   const artKey = classArtKey(cls);
-  const skin = (CLASS_DESIGNS[artKey] ? artKey : (def.skin ?? character)) as CharacterKey;
+  const skin = CLASS_DESIGNS[artKey] ? artKey : (def.skin ?? character);
   
   const decor: Decor[] = [];
 
@@ -3777,7 +3777,7 @@ export function render(ctx: CanvasRenderingContext2D, s: GameState, sprites: Spr
     ctx.save();
     ctx.globalAlpha = alpha;
     drawShadow(ctx, e.x, e.y, 16);
-    const strips = sprites.playerSkins[e.character] ?? sprites.playerSkins["spike"];
+    const strips = sprites.playerSkins[e.character] ?? sprites.playerSkins["spike"]!;
     const strip = e.moving ? strips.walk : strips.idle;
     const glitch = e.dead ? rand(-4, 4) : 0;
     drawFrame(

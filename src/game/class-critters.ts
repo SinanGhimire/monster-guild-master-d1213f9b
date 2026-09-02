@@ -91,8 +91,8 @@ export const CLASS_DESIGNS: Record<string, CritterDesign> = Object.fromEntries(
       pattern: "none",
       brow: look.brow ?? "flat",
       hat: look.hat,
-      accent: look.accent,
-      glow: look.glow,
+      ...(look.accent ? { accent: look.accent } : {}),
+      ...(look.glow ? { glow: look.glow } : {}),
     };
     return [design.key, design];
   }),
