@@ -7,6 +7,7 @@ import { applyUpgrade, rollUpgrades, xpForLevel, RARITY_COLOR, UPGRADE_MAP } fro
 import { CRITTER_KEYS, CRITTER_STATS, CRITTER_TIER } from "./critter-species";
 import { AI_ROLE } from "./ai";
 import { CLASSES, classForSkin, type ClassKey } from "./classes";
+import { CLASS_DESIGNS, classArtKey } from "./class-critters";
 import type {
   Bullet,
   Mods,
@@ -1262,7 +1263,8 @@ export function createState(
   cls: ClassKey = classForSkin(character),
 ): GameState {
   const def = CLASSES[cls] ?? CLASSES.soldier;
-  const skin = def.skin ?? character;
+  const artKey = classArtKey(cls);
+  const skin = (CLASS_DESIGNS[artKey] ? artKey : (def.skin ?? character)) as CharacterKey;
   const c = CHARACTERS[skin];
   const decor: Decor[] = [];
 
@@ -3775,7 +3777,7 @@ export function render(ctx: CanvasRenderingContext2D, s: GameState, sprites: Spr
     ctx.save();
     ctx.globalAlpha = alpha;
     drawShadow(ctx, e.x, e.y, 16);
-    const strips = sprites.playerSkins[e.character];
+    const strips = sprites.playerSkins[e.character] ?? sprites.playerSkins["spike"];
     const strip = e.moving ? strips.walk : strips.idle;
     const glitch = e.dead ? rand(-4, 4) : 0;
     drawFrame(
@@ -3850,7 +3852,7 @@ export function render(ctx: CanvasRenderingContext2D, s: GameState, sprites: Spr
   ctx.save();
   if (p.invuln > 0 && Math.floor(time * 20) % 2 === 0) ctx.globalAlpha = 0.45;
   const pAnim: AnimKey = s.over ? "death" : p.moving ? "walk" : "idle";
-  const pStrip = sprites.playerSkins[p.character][pAnim];
+  const pStrip = (sprites.playerSkins[p.character] ?? sprites.playerSkins["spike"]!)[pAnim];
   drawFrame(
     ctx,
     pStrip,
