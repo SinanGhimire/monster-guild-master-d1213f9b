@@ -7,6 +7,9 @@ import {
   type CritterEnemyKey,
 } from "./critters";
 import { ENEMY_ART } from "./enemy-art";
+import { CLASS_DESIGNS, classArtKey } from "./class-critters";
+import { critterPortrait } from "./critters";
+import type { ClassKey } from "./classes";
 
 
 
@@ -66,7 +69,7 @@ export type Singles = Record<CoreSingleKey, HTMLImageElement> &
 
 export interface Sprites {
   strips: Record<ActorKey, Record<AnimKey, Strip>>;
-  playerSkins: Record<CharacterKey, Record<AnimKey, Strip>>;
+  playerSkins: Record<string, Record<AnimKey, Strip>>;
   singles: Singles;
 }
 
@@ -214,7 +217,7 @@ export function loadSprites(): Promise<Sprites> {
     ) as Record<ActorKey, Record<AnimKey, Strip>>;
     const playerSkins = Object.fromEntries(
       playerKeys.map((k, i) => [k, playerAnims[i]!]),
-    ) as Record<CharacterKey, Record<AnimKey, Strip>>;
+    ) as Record<string, Record<AnimKey, Strip>>;
     const singles = Object.fromEntries(
       singleKeys.map((k, i) => [k, singleImgs[i]!]),
     ) as Singles;
@@ -225,3 +228,23 @@ export function loadSprites(): Promise<Sprites> {
   return inflight;
 }
 
+
+
+/**
+ * Class skins are generated on demand (30 designs is too much work for the
+ * splash screen) and cached inside the sprite bundle the renderer reads.
+ */
+export async function ensureClassSkin(cls: ClassKey): Promise<void> {
+  const sprites = await loadSprites();
+  const key = classArtKey(cls);
+  if (sprites.playerSkins[key]) return;
+  const design = CLASS_DESIGNS[key];
+  if (!design) return;
+  sprites.playerSkins[key] = await loadAnims(critterSrc(design));
+}
+
+/** Menu tile art for a class. */
+export function classPortrait(cls: ClassKey): string {
+  const design = CLASS_DESIGNS[classArtKey(cls)];
+  return design ? critterPortrait(design) : "";
+}

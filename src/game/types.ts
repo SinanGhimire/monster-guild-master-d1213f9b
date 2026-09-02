@@ -63,7 +63,9 @@ export type CharacterKey =
   | "oracle"
   | "seraph"
   | "warchief"
-  | "sprout";
+  | "sprout"
+  // class art keys (c_<class>), generated procedurally per class
+  | (string & {});
 
 export type WeaponRarity = "common" | "uncommon" | "rare" | "epic" | "legendary";
 export type BulletVisual = "tracer" | "bolt" | "orb" | "beam" | "arrow" | "ring";
