@@ -76,22 +76,50 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      {
+        name: "viewport",
+        content:
+          "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, minimal-ui",
+      },
+      { name: "theme-color", content: "#1a1428" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+      { name: "apple-mobile-web-app-title", content: "Echo Vanguards" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "application-name", content: "Echo Vanguards" },
+      { name: "msapplication-TileColor", content: "#1a1428" },
+      { name: "msapplication-tap-highlight", content: "no" },
+      { name: "format-detection", content: "telephone=no" },
+      { name: "description", content:
+          "Survive endless zombie waves. Your gun auto-tracks up close — hold fire to aim yourself. Past runs return as Echoes to fight beside you.",
+      },
+      { name: "author", content: "Echo Vanguards" },
+      { property: "og:title", content: "Echo Vanguards" },
+      {
+        property: "og:description",
+        content:
+          "Survive endless zombie waves. Your gun auto-tracks up close — hold fire to aim yourself. Past runs return as Echoes to fight beside you.",
+      },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Echo Vanguards" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;700;900&display=swap",
+      },
+      { rel: "icon", href: "/favicon.png", type: "image/png" },
+      
+      { rel: "apple-touch-icon", href: "/favicon.png" },
+      { rel: "manifest", href: "/manifest.json" },
+      { rel: "apple-touch-startup-image", href: "/favicon.png" },
     ],
   }),
   shellComponent: RootShell,
@@ -101,8 +129,60 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  useEffect(() => {
+    // Register service worker for offline support + app store installability
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .catch(() => {
+          /* SW registration failed — non-critical, app still works */
+        });
+    }
+
+    // Prevent iOS rubber-band bounce overscroll
+    document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.width = "100%";
+    document.body.style.height = "100%";
+
+    // Prevent pull-to-refresh and bounce on mobile
+    const preventBounce = (e: TouchEvent) => {
+      if (e.touches.length > 1) return;
+      const el = e.target as HTMLElement;
+      // Allow scrolling within scrollable panels/menus
+      let scrollable = el;
+      while (scrollable && scrollable !== document.body) {
+        if (
+          scrollable.scrollHeight > scrollable.clientHeight &&
+          getComputedStyle(scrollable).overflowY !== "visible"
+        ) {
+          return;
+        }
+        scrollable = scrollable.parentElement!;
+      }
+      if (window.scrollY === 0 && e.touches[0]!.clientY > 0) {
+        // At top, pulling down — prevent bounce
+      }
+    };
+    document.addEventListener("touchmove", preventBounce, { passive: true });
+
+    // Pause game when tab is hidden (saves battery, prevents dt spikes)
+    const onVisChange = () => {
+      if (document.hidden) {
+        // Dispatch a custom event the game loop can listen to
+        window.dispatchEvent(new CustomEvent("echo-pause"));
+      }
+    };
+    document.addEventListener("visibilitychange", onVisChange);
+
+    return () => {
+      document.removeEventListener("touchmove", preventBounce);
+      document.removeEventListener("visibilitychange", onVisChange);
+    };
+  }, []);
+
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <HeadContent />
       </head>
