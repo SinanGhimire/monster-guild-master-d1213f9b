@@ -139,8 +139,7 @@ export interface Player extends Vec {
   shield: number;
   damageMult: number;
   rateMult: number;
-  /** sprite key: a hero CharacterKey or a class art key (c_<class>) */
-  character: string;
+  character: CharacterKey;
   /** selected Brotato-style class */
   class: ClassKey;
   mods: Mods;
@@ -345,8 +344,7 @@ export interface Echo {
   rateMult: number;
   cooldown: number;
   muzzle: number;
-  /** sprite key: a hero CharacterKey or a class art key (c_<class>) */
-  character: string;
+  character: CharacterKey;
   mods: Mods;
   fading: number;
   dead: boolean;

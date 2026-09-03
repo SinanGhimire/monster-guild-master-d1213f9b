@@ -28,7 +28,6 @@ import { RARITY_COLOR, UPGRADES } from "@/game/upgrades";
 import { isNewDay, levelFor, useProfile, XP_PER_LEVEL, xpInLevel } from "@/game/profile";
 import type { CharacterKey } from "@/game/types";
 import { CLASSES, CLASS_KEYS, type ClassKey } from "@/game/classes";
-import { classPortrait } from "@/game/assets";
 
 const IDLE_FRAMES = 6;
 
@@ -874,12 +873,12 @@ export function MenuPanel({
                             background: `radial-gradient(circle at 50% 45%, color-mix(in oklab, ${def.color} 32%, transparent), rgba(0,0,0,0.35) 72%)`,
                           }}
                         >
-                          <img
-                            src={classPortrait(k)}
-                            alt={def.name}
-                            className="h-full w-auto object-contain"
-                            style={{ imageRendering: "auto" }}
-                          />
+                          <span
+                            className="font-display text-lg font-black uppercase"
+                            style={{ color: def.color }}
+                          >
+                            {def.name.slice(0, 2)}
+                          </span>
                         </div>
                         <p className="text-[9px] font-bold uppercase tracking-wide text-white/65">
                           {WEAPONS[def.weapon]?.name ?? def.weapon}
